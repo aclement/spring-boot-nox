@@ -275,6 +275,11 @@ Rewrite complete: /Users/aclement/gits/2/spring-petclinic/target/spring-petclini
 Speed?
 
 ```
+Benchmark                                  Mode  Cnt  Score   Error  Units
+PetclinicAndyBenchmark.explodedJarMain     avgt   18  3.288 ± 0.032   s/op
+PetclinicAndyBenchmark.fatJar              avgt   18  4.653 ± 0.031   s/op
+PetclinicAndyNoxBenchmark.explodedJarMain  avgt   18  3.122 ± 0.021   s/op
+PetclinicAndyNoxBenchmark.fatJar           avgt   18  4.445 ± 0.026   s/op
 ```
 
 Reflection?
