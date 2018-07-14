@@ -381,3 +381,19 @@ Interesting that it saves so little time
 I haven't found time to look at the memory profile yet. It could be interesting as these shortcuts should reduce the
 amount of transient garbage created in many places (whilst hunting for annotations).
 
+Crude look at GC statements.
+
+After starting regular petclinic (first GC message after 'Started PetClinicApplication' message):
+
+```
+[GC (Allocation Failure) [PSYoungGen: 780800K->13195K(968704K)] 812806K->45209K(1167872K), 0.0121372 secs] [Times: user=0.04 sys=0.01, real=0.01 secs]
+```
+
+After starting nox petclinic:
+
+```
+[GC (Allocation Failure) [PSYoungGen: 653312K->11279K(673792K)] 687665K->45640K(900608K), 0.0129719 secs] [Times: user=0.06 sys=0.01, real=0.02 secs]
+```
+
+The heap sizes being shown post GC 968704k vs 673792k  and 1167872k vs 900608k seem encouraging (don't they?)
+
