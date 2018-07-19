@@ -95,6 +95,46 @@ at runtime. The generated code is also a bit more optimal than the form you get 
 could be done here to optimize it further).  Not only are the application configuration classes modified but also all
 of those in the nested jars (so all those in the boot infrastructure). 
 
+### Quick walkthrough of the code...
+
+By way of example, consider the PostConstruct/PreDestroy processing in Spring Framework. The code in Spring in
+`InitDestroyAnnotationBeanPostProcessor` will search for these annotations - it typically won't find them on
+many types. So let's precompute that.  We create the `Collector` (a Nox term) called 
+`InitDestroyAnnotationBeanPostProcessorCollector`. Collectors are loaded by having them mentioned in META-INF/spring.factories, 
+here is the built in spring.factories:
+
+```
+io.spring.nox.optimizer.spi.Collector=\
+io.spring.nox.optimizer.collectors.ConfigurationClassCollectorRewriter,\
+io.spring.nox.optimizer.collectors.SpringCacheAnnotationParserCollector,\
+io.spring.nox.optimizer.collectors.CommonAnnotationBeanPostProcessorCollector,\
+io.spring.nox.optimizer.collectors.InitDestroyAnnotationBeanPostProcessorCollector
+```
+
+See our InitDestroyABPPC mentioned there. By having a collector you will be called as nox visits the boot jar classes
+(application classes and classes inside dependencies). As a collector you can choose what you are interested in, so
+our InitDestroyABPPC, in `processAnnotation` it checks for PostConstruct/PreDestroy and records where it was found.
+Because there is a type system in existence (driven by the boot jar contents) it is possible to use that for
+deeper analysis, for example if you need to check if the annotation you have been passed is meta-annotated by those
+you are interested in.
+
+Once the initial scan is finished, you be be called for a precomputed key and value. The key will identify your
+data in the precomputed blob passed to Spring (the current examples use the class that will be paying attention
+to the data from this collector as the key).  Our InitDestroyABPPC key is `org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor`
+The precomputed value will typically be a map or a list of simple data types. In the case of InitDestroyABPPC
+it is a list of the types that have one or more of the PostConstruct/PreDestroy somewhere in them.
+
+After fetching this data from the collector it is generated into a class (PrecomputedInfoLoader) which is
+added to the jar. 
+
+Obviously this precomputed data is only useful if spring is looking out for it, hence you need to be
+running the spring fork currently at `https://github.com/aclement/spring-framework/tree/lazy-conversion-service`. 
+This is a 5.1.0.BUILD-SNAPSHOT currently so you need to
+build that spring locally `./gradlew install` and then override your spring version to use it.
+When that version of spring starts, one central attempt is made to load the
+PrecomputedInfoLoader class (if not found, no big deal) - if found it is called to initialize
+a map and then the various classes who want to use it can access it for their own precomputed data.
+
 ### Does it help?
 
 There are few aspects to consider: impact on startup, impact on memory profile and impact on those reflection numbers 

@@ -1,0 +1,5 @@
+io.spring.nox.optimizer.spi.Collector=\
+io.spring.nox.optimizer.collectors.ConfigurationClassCollectorRewriter,\
+io.spring.nox.optimizer.collectors.SpringCacheAnnotationParserCollector,\
+io.spring.nox.optimizer.collectors.CommonAnnotationBeanPostProcessorCollector,\
+io.spring.nox.optimizer.collectors.InitDestroyAnnotationBeanPostProcessorCollector
