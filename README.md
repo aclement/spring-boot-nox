@@ -98,7 +98,7 @@ of those in the nested jars (so all those in the boot infrastructure).
 ### Quick walkthrough of the code...
 
 By way of example, consider the PostConstruct/PreDestroy processing in Spring Framework. The code in Spring in
-`[InitDestroyAnnotationBeanPostProcessor](https://github.com/spring-projects/spring-framework/blob/master/spring-beans/src/main/java/org/springframework/beans/factory/annotation/InitDestroyAnnotationBeanPostProcessor.java)` will search for these annotations - it typically won't find them on
+[`InitDestroyAnnotationBeanPostProcessor`](https://github.com/spring-projects/spring-framework/blob/master/spring-beans/src/main/java/org/springframework/beans/factory/annotation/InitDestroyAnnotationBeanPostProcessor.java) will search for these annotations - it typically won't find them on
 many types. So let's precompute that.  We create the `[Collector](https://github.com/aclement/spring-boot-nox/blob/530d575d82ce894ca9e666591294e8639e67caed/src/main/java/io/spring/nox/optimizer/spi/Collector.java)` (a Nox term) called 
 `[InitDestroyAnnotationBeanPostProcessorCollector](https://github.com/aclement/spring-boot-nox/blob/master/src/main/java/io/spring/nox/optimizer/collectors/InitDestroyAnnotationBeanPostProcessorCollector.java)`. Collectors are
  loaded by having them mentioned in `[META-INF/spring.factories](https://github.com/aclement/spring-boot-nox/blob/master/src/main/resources/META-INF/spring.factories)`, 
